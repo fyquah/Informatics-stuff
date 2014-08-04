@@ -1,0 +1,114 @@
+// Implement with adjacency matrix	
+
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <cstring>
+
+using namespace std;
+
+const int MAXSIZE = 5; // the maximum number of vertex
+const int inf = 1 << 30;
+
+class Node
+{
+public:
+	int index;
+	int cost;
+	Node(int a , int b){
+		index = a;
+		cost = b;
+	}
+};
+
+bool operator<(const Node &leftNode, const Node &rightNode) {
+	if (leftNode.cost != rightNode.cost) return leftNode.cost < rightNode.cost;
+	if (leftNode.index != rightNode.index) return leftNode.index < rightNode.index;
+	return false;
+}
+
+bool operator>(const Node &leftNode, const Node &rightNode) {
+	if (leftNode.cost != rightNode.cost) return leftNode.cost  >rightNode.cost;
+	if (leftNode.index != rightNode.index) return leftNode.index > rightNode.index;
+	return false;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	int mat[MAXSIZE][MAXSIZE];
+	int distance[MAXSIZE];
+
+	int N;
+	cin >> N;
+	for(int i = 0 ; i < N ; i++){
+		int a,b,c;
+		cin >> a >> b >> c;
+		mat[a][b] = c;
+	}
+
+	bool visited[MAXSIZE];
+	memset(visited , 0 , sizeof(visited));
+	priority_queue<Node , vector<Node> , std::greater<Node> > q;
+
+	distance[0] = 0;
+	for(int i = 1 ; i < MAXSIZE ; i++)
+		distance[i] = inf; // initialize all the distance to infinity
+
+	q.push(Node(0 ,0));
+
+	while(!q.empty()){
+		Node cur = q.top();
+		q.pop();
+		if(visited[cur.index])
+			continue;
+
+		visited[cur.index] = true;
+		distance[cur.index] = std::min(cur.cost , distance[cur.index]);
+
+		for(int i = 0 ; i < MAXSIZE ; i++) // will be faster if we use linked list instead
+			if(!visited[i] && mat[cur.index][i] != 0)
+				q.push(Node(i , mat[cur.index][i] + distance[cur.index])); 
+	}
+
+	return 0;
+}
+
+// void dijkstra(Node start) {
+// 	priorityQueue s;
+//  	s.add(start);
+//  	while (s.empty() == false) {
+//   		top = s.top();
+//   		s.pop();
+// 		// mark top as visited;
+// 		// check for termination condition (have we reached the target node?)
+// 		// add all of top's unvisited neighbors to the stack
+//     }
+// }
+
+
+
+// distance[0] = 0;
+// 	for(int i = 1 ; i < MAXSIZE ; i++)
+// 		distance[i] = inf; // initialize all the distance to infinity
+
+// 	q.push(Node(0 ,0 ,0));
+
+// 	while(!q.empty()){
+// 		Node cur = q.top();
+// 		q.pop();
+// 		if(visited[cur.index])
+// 			continue;
+
+// 		visited[cur.index] = true;
+// 		distance[cur.index] = std::min(distance[cur.parent] + cur.weight , distance[cur.index]);
+
+// 		for(int i = 0 ; i < MAXSIZE ; i++) // will be faster if we use linked list instead
+// 			if(!visited[i] && mat[cur.index][i] != 0)
+// 				q.push(Node(i , mat[cur.index][i] , cur.index));
+// 	}
+
+// 	for(int i = 0  ; i < MAXSIZE ; i++)
+// 		std::cout << i << " : " << distance[i] << "\n";
+
+// 	return 0;

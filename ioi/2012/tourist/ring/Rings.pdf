@@ -1,0 +1,310 @@
+
+	
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>mrJudge 2013</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+	
+	<!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
+	
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+	
+	
+
+	<!-- Le styles -->	 
+	<link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">    
+	<link href="/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css">    
+	<link href="/css/font-awesome.css" rel="stylesheet" type="text/css">
+	<link href="/css/prettify.css" rel="stylesheet" type="text/css">
+	<link href="/css/fileupload_style.min.css" rel="stylesheet" type="text/css">
+	<link href="/css/jquery.pnotify.default.css" rel="stylesheet">
+	<link href="/css/app.css" rel="stylesheet" type="text/css">
+	
+	<!-- le scripts -->
+	<script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/js/prettify.js"></script>
+	<script type="text/javascript" src="/js/fileupload_style.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.nicescroll.js"></script>
+	<script type="text/javascript" src="/js/jquery.pnotify.js"></script>
+	<script type="text/javascript" src="/js/app.js"></script>
+	
+	<script>
+			$.pnotify.defaults.styling = "bootstrap";
+			$.pnotify.defaults.history = false;
+			$.pnotify.defaults.delay = 5000;
+			$.pnotify.defaults.sticker = false;
+			$.pnotify.defaults.mouse_reset = false;
+			
+			$(function(){
+								$.pnotify({
+									text: "Please login to view this page.",
+									type: "error",
+									opacity: .9
+								});
+							});		</script>
+			
+	</head>
+<body>
+    <style type="text/css">
+      body {
+        padding-bottom: 60px;
+      }
+
+      /* Custom container */
+      .container {
+        margin: 0 auto;
+      }
+      .container > hr {
+        margin: 60px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 80px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 100px;
+        line-height: 1;
+      }
+      .jumbotron .lead {
+        font-size: 24px;
+        line-height: 1.25;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+
+      .footer {
+          text-align: center;
+          opacity: 0.7;
+      }
+      .dl-horizontal dd {
+		margin-left: 90px;
+		}
+		.dl-horizontal dt {
+width: 80px;
+}
+    </style>
+    <div class="container">
+
+      
+
+      <!-- Jumbotron -->
+      <div class="jumbotron">
+        <h1>mrJudge</h1>
+        <p class="lead">
+		Online Judge of Raffles Institution Infocomm Club	
+		</p>
+        		<form class="form-horizontal" method="POST">
+		<input type="text" style="text-align: center; margin-bottom: 5px; padding: 8px;" class="input-xlarge" name="username" placeholder='cin &gt;&gt; username;'><br>
+		<input type="password" style="text-align: center; margin-bottom: 10px; padding: 8px;" class="input-xlarge" name="password" placeholder='scanf("%s", password);'><br>
+		<input type="submit" class="btn btn-large btn-primary" value="Login" name="login">
+		</form>
+		      </div>
+
+      <hr>
+      <!-- Example row of columns -->
+      <div class="row-fluid">
+        <div class="span2">
+          <h2>Online Users</h2>
+          <p id='onlineusers'></p>
+          
+          <h2>Instances</h2>
+          <p id='onlineinstances'></p>
+        </div>
+        <div class="span4" style="overflow: hidden;">
+          <h2>Contests</h2>
+          <span id='contestinfo'>
+          <p class='lead' style='margin: 0px'>Contest</p>
+          <p>Contests are currently loading.</p>
+          <p><a class="btn" style='float:left'>&laquo; Newer</a>
+          <a class="btn" style='float:right'>Older &raquo;</a></p>
+          </span>
+       </div>
+        
+        <div class="span6">
+          <h2>Latest Submissions</h2>
+          <div style="height: 500px; overflow: auto;" id='subbox' class='scrollbar'>
+			
+			<table class="table table-bordered  table-hover" id = 'subs'>
+				    <thead>
+				      <tr>
+				        <th>subID</th>
+				        <th>Problem</th>
+				        <th>User</th>
+				        <th>Time</th>
+				        <th>Score</th>
+				        <th>Progress</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				    </tbody>
+				</table>
+			</div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="footer">
+        <p>Copyrighted &copy; mrJudge 2012-2014</p>
+        <p>Developed for <a href='http://riicc.sg'>Raffles Institution Infocomm Club</a></p>
+        <p>Maintained by Ranald Lam, Feng Jiahai, Pang Wen Yuen</p>
+		<p>All rights reserved</p>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+
+    ================================================== -->
+<script type="text/javascript">
+  var i = 0, max, cur;
+  function incr_score() {
+    var disp = Math.min(i*74, cur);
+    var percent = disp/max*100;
+    i++;
+    $("#score").html(String(Math.round(disp))+" / "+String(max)+" ("+percent.toFixed(2)+"%)");
+    if ( i % 5 == 0 || i-1 >= cur/74 ) $("#progress_bar").css('width', String(percent)+"%");
+    if ( i-1 < cur/74 ) setTimeout(incr_score, 20);
+  }
+  window.onload = function() {
+    // Animate score bar
+    max = 53500;
+    cur = 0;
+    setTimeout(incr_score, 20);
+  }
+  function updateOnlineUsers() {
+    $('#onlineusers').load("?onlineusers");
+  }
+  function updateOnlineInstances() {
+	$('#onlineinstances').load("?onlineinstances");
+  }
+  updateOnlineUsers();
+  updateOnlineInstances();
+  setInterval(updateOnlineUsers, 20000); 
+  setInterval(updateOnlineInstances, 20000);
+  function loadContest(contestID) {
+	$('#contestinfo').load("?contestID="+contestID);
+  }
+  loadContest(130);
+</script>
+<script type = 'text/javascript'>
+var upd = false, botsub = 1000000000, topsub = 0;
+var lastupd = 1404307551;
+var loading = false;
+function poll(){
+	if (botsub == 1000000000) {
+		setTimeout(poll, 2000);
+		return;
+	}
+	var savebotsub = botsub;
+	$.ajax({
+		url: 'index_latestsubmission.php',
+		type: 'get',
+		data: {'botsub': botsub, 'lastupd': lastupd},
+		dataType: 'json',
+		success: function(data){
+			//console.log(data);
+			for(var i = 0; i < data.subs.length; ++i){
+				var c = data.subs[i];
+				if($('#row-'+c.subID).length == 0){
+					//$('#subs').append("<tr id = 'row-"+c.subID+"'>"+c.str+"</tr>");
+				}
+				else{
+					$('#row-'+c.subID).html(c.str);
+					//console.log('changed '+c.subID);
+				}
+			}
+			if(!upd) lastupd = data.lastupd;
+			upd = false;
+		},
+		complete: function() {
+			if (savebotsub == botsub) setTimeout(poll, 2000);
+		}
+	});
+}
+function getMore(){
+	$.ajax({
+		url: 'index_latestsubmission.php',
+		type: 'get',
+		data: {'botsub': botsub, 'lastupd': 0},
+		dataType: 'json',
+		async: false,
+		success: function(data){
+			
+			for(var i = 0; i < data.moresub.length; ++i){
+				var c = data.moresub[i];
+				if($('#row-'+c.subID).length == 0){
+					$('#subs').append("<tr id = 'row-"+c.subID+"'>"+c.str+"</tr>");
+					botsub = Math.min(c.subID, botsub);
+					topsub = Math.max(c.subID, topsub);
+					//console.log('added '+c.subID);
+					//poll();
+				}
+				upd = true;
+			}
+			loading = false;
+			poll();
+		}
+	});
+}
+function getNew(){
+	$.ajax({
+		url: 'index_latestsubmission.php',
+		type: 'get',
+		data: {'topsub': topsub},
+		dataType: 'json',
+		success: function(data){
+			
+			for(var i = 0; i < data.newsub.length; ++i){
+				var c = data.newsub[i];
+				if($('#row-'+c.subID).length == 0){
+					$('#subs').prepend("<tr id = 'row-"+c.subID+"'>"+c.str+"</tr>");
+					topsub = Math.max(c.subID, topsub);
+					//console.log('added '+c.subID);
+				}
+				upd = true;
+			}
+			//setTimeout(getNew, 1);
+		},
+		complete: function () {
+			setTimeout(getNew, 2000);
+		}
+	});
+
+}
+$(document).ready(function(){
+	getMore();
+	getNew();
+	poll();
+	$("#subbox").scroll(function(){  
+		if($("#subbox").scrollTop() >= $("#subs").height() - $("#subbox").height() - 50 && botsub >= 0 && !loading){ 
+			//botsub -= 10;
+			loading = true;
+			getMore();
+			//console.log('scrolled');
+		}  
+	});
+});
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,70 @@
+/*
+
+ID: fy.q1
+LANG: C++
+TASK: milk2
+*/
+
+# include <iostream>
+# include <fstream>
+# include <vector>
+# include <algorithm>
+# include <string>
+# include <utility>
+
+using namespace std;
+
+int streak = 0;
+int n;
+pair <int , int> times[5001];
+int long_idle = 0;
+int long_continue = 0;
+
+int search(pair <int , int > x, int index)
+{
+    int j = 0;
+    for(j = index + 1; j < n ; j++) {
+    	if(times[j].first > x.second) break;
+    	if(j == n - 1) j = n;
+        if(times[j].second > x.second) return search(times[j] , j);
+    }
+    streak = times[j-1].second - streak;
+    if(long_continue < streak) long_continue = streak;
+    streak = 0;
+    return j - 1;
+}
+
+int main()
+{
+    ifstream fin("milk2.in");
+    fin >> n;
+    for(int i = 0 ; i < n ; i++)
+    {
+        fin >> times[i].first >> times[i].second;
+    }
+    fin.close();
+
+    sort(times , times + n);
+
+    for(int i = 0 ; i < n ;i++)
+    {
+    	if(long_continue < times[i].second - times[i].first) long_continue = times[i].second - times[i].first;
+    	streak = times[i].first;
+        i = search(times[i] , i);
+        int k = i + 2;
+        for(k = i + 1 ; k < n ; k++)
+        {
+        	if(times[k].first != times[i].first) break;
+        }
+        if(k >= n) break;
+        else
+        {
+        	if(times[k].first - times[i].second > long_idle) long_idle = times[k].first - times[i].second;
+        }
+    }
+
+    if(streak > long_continue) long_continue = streak;
+    ofstream fout("milk2.out");
+    fout << long_continue << " " << long_idle << "\n";
+    fout.close();
+}

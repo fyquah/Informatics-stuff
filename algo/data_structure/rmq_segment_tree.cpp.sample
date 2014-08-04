@@ -1,0 +1,50 @@
+#include <cstdio>
+#include <algorithm>
+const int inf = 1 << 30;
+
+int solve(int * tree , int n , int lo, int hi, int r_lo , int r_hi, int node)
+{
+	if(r_lo <= lo && r_hi >= hi) return tree[node];
+	
+	if(r_lo > hi || r_hi < lo) return inf;
+
+	return std::min(solve(tree,n,lo,(lo+hi)/2,r_lo,r_hi,2*node+1) , solve(tree,n,(lo+hi)/2 +1,hi,r_lo,r_hi,2*node+2));
+}
+
+int rmq(int * tree , int n , int lo , int hi)
+{
+	if(lo < 0 || hi >= n)
+		return -1;
+	return solve(tree,n,0,n-1,lo,hi,0);
+}
+
+int build(int arr[] , int lo , int hi , int * tree, int node)
+{
+	if(lo == hi) {
+		tree[node] = arr[lo];
+		return arr[lo];
+	}
+	else {
+		tree[node] = std::min(build(arr,lo,(lo+hi)/2,tree,node*2+1),build(arr,(lo+hi)/2+1,hi,tree,node*2+2));
+		return tree[node];
+	}
+}
+
+int * construct(int arr[] , int n)
+{
+	int max_size = 2*n-1;
+	int * temp = new int[max_size];
+
+	build(arr,0,n-1,temp,0);
+
+	return temp;
+}
+
+int main(void)
+{
+	int arr[] = {1,5,7,30,22,13,5,61,102,32,4,55,16,12,54,2,12,534,60};
+	int n = sizeof(arr) / sizeof(arr[0]);
+	int * segment_tree = construct(arr,n);
+	printf("Lowest value between 1 and 15 is %d\n" , rmq(segment_tree,n,0,15));
+	return 0;
+}
